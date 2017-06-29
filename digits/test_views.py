@@ -11,7 +11,7 @@ from . import test_utils
 from . import webapp
 
 ################################################################################
-# Base classes (they don't start with "Test" so nose won't run them)
+# Base classes (they don't start with "Test" so nose won't run them)基类
 ################################################################################
 
 
