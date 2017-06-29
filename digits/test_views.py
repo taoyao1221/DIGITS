@@ -5,13 +5,13 @@ import json
 import time
 import urllib
 
-from urlparse import urlparse
+from urlparse import urlparse　　#urlparse模块，我们能够轻松地把URL分解成元件，之后，还能使用urunlparse将这些元件重新组装成一个URL。
 
-from . import test_utils
+from . import test_utils     　　#　.是指当前包
 from . import webapp
 
 ################################################################################
-# Base classes (they don't start with "Test" so nose won't run them)基类
+# Base classes (they don't start with "Test" so nose won't run them)
 ################################################################################
 
 
@@ -53,53 +53,53 @@ class BaseViewsTest(object):
     @classmethod
     def job_id_from_response(cls, rv):
         """
-        Extract the job_id from an HTTP response
+        Extract the job_id from an HTTP response　＃用于从HTTP响应中提取job_id
         """
         job_url = rv.headers['Location']
-        parsed_url = urlparse(job_url)
-        return parsed_url.path.split('/')[-1]
+        parsed_url = urlparse(job_url)　　　　　　#结构url地址，获得job_id目录
+        return parsed_url.path.split('/')[-1]　　#可以看出，job_id位于目录最后一层
 
     @classmethod
     def job_exists(cls, job_id, job_type='jobs'):
         """
-        Test whether a job exists
+        Test whether a job exists　　　＃用于判断一个job是否存在
         """
         url = '/%s/%s' % (job_type, job_id)
         rv = cls.app.get(url, follow_redirects=True)
-        assert rv.status_code in [200, 404], 'got status code "%s" from "%s"' % (rv.status_code, url)
-        return rv.status_code == 200
+        assert rv.status_code in [200, 404], 'got status code "%s" from "%s"' % (rv.status_code, url)　#HTTP请求状态码，若不在[200, 404]内，assert
+        return rv.status_code == 200　　 #请求成功返回TRUE,失败返回False
 
     @classmethod
     def job_status(cls, job_id, job_type='jobs'):
         """
-        Get the status of a job
+        Get the status of a job    ＃获取job的状态
         """
         url = '/%s/%s/status' % (job_type, job_id)
         rv = cls.app.get(url)
         assert rv.status_code == 200, 'Cannot get status of job %s. "%s" returned %s' % (job_id, url, rv.status_code)
         status = json.loads(rv.data)
-        return status['status']
+        return status['status']　　　#　返回job的状态
 
     @classmethod
     def job_info(cls, job_id, job_type='jobs'):
         """
-        Get job information (full JSON response)
+        Get job information (full JSON response)　＃获取job信息，full JSON格式
         """
         url = '/%s/%s.json' % (job_type, job_id)
         rv = cls.app.get(url)
         assert rv.status_code == 200, 'Cannot get info from job %s. "%s" returned %s' % (job_id, url, rv.status_code)
         info = json.loads(rv.data)
-        return info
+        return info　　#　返回job信息
 
     @classmethod
     def job_info_html(cls, job_id, job_type='jobs'):
         """
-        Get job information (full HTML response)
+        Get job information (full HTML response)　　　＃获取job信息，full HTML格式
         """
         url = '/%s/%s' % (job_type, job_id)
         rv = cls.app.get(url)
         assert rv.status_code == 200, 'Cannot get info from job %s. "%s" returned %s' % (job_id, url, rv.status_code)
-        return rv.data
+        return rv.data　
 
     @classmethod
     def abort_job(cls, job_id, job_type='jobs'):
@@ -115,13 +115,11 @@ class BaseViewsTest(object):
         """
         Poll the job status until it completes
         Returns the final status
-
         Arguments:
         job_id -- the job to wait for
-
         Keyword arguments:
-        timeout -- maximum wait time (seconds)
-        polling_period -- how often to poll (seconds)
+        timeout -- maximum wait time (seconds)　　最大等待时间
+        polling_period -- how often to poll (seconds)　　
         job_type -- [datasets|models]
         """
         start = time.time()
@@ -150,7 +148,7 @@ class BaseViewsTest(object):
     @classmethod
     def edit_job(cls, job_id, name=None, notes=None):
         """
-        Edit the name of a job
+        Edit the name of a job　　＃编辑job名字
         """
         data = {}
         if name:
@@ -163,7 +161,7 @@ class BaseViewsTest(object):
     @classmethod
     def delete_job(cls, job_id, job_type='jobs'):
         """
-        Delete a job
+        Delete a job　　　　＃删除一个job
         Returns the HTTP status code
         """
         rv = cls.app.delete('/%s/%s' % (job_type, job_id))
@@ -196,7 +194,7 @@ class TestViews(BaseViewsTest):
             yield self.check_autocomplete, absolute_path
 
     def check_autocomplete(self, absolute_path):
-        path = '/' if absolute_path else './'
+        path = '/' if absolute_path else './'　　　#　是否采用相对路径
         url = '/autocomplete/path?query=%s' % (urllib.quote(path, safe=''))
         rv = self.app.get(url)
         assert rv.status_code == 200
