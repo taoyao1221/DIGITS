@@ -98,10 +98,9 @@ class BaseViewsTestWithImageset(BaseViewsTest):
     @classmethod
     def create_dataset(cls, **kwargs):
         """
-        Create a dataset
+        Create a dataset　　　　　　＃创建数据集
         Returns the job_id
         Raises RuntimeError if job fails to create
-
         Keyword arguments:
         **kwargs -- data to be sent with POST request
         """
@@ -117,9 +116,9 @@ class BaseViewsTestWithImageset(BaseViewsTest):
             'encoding':         cls.ENCODING,
             'compression':      cls.COMPRESSION,
         }
-        data.update(kwargs)
+        data.update(kwargs)　#将kwargs中的键值对更新到data中
 
-        request_json = data.pop('json', False)
+        request_json = data.pop('json', False)　　#删除字典给定键 key 所对应的值，返回值为被删除的值。key值必须给出。 否则，返回default值。
         url = '/datasets/images/classification'
         if request_json:
             url += '.json'
@@ -132,10 +131,10 @@ class BaseViewsTestWithImageset(BaseViewsTest):
                 raise RuntimeError('Model creation failed with %s' % rv.status_code)
             return json.loads(rv.data)['id']
 
-        # expect a redirect
+        # expect a redirect 重定向
         if not 300 <= rv.status_code <= 310:
             s = BeautifulSoup(rv.data, 'html.parser')
-            div = s.select('div.alert-danger')
+            div = s.select('div.alert-danger')　#筛选标签，返回列表
             if div:
                 print div[0]
             else:
@@ -165,7 +164,7 @@ class BaseViewsTestWithDataset(BaseViewsTestWithImageset):
         assert cls.dataset_wait_completion(cls.dataset_id) == 'Done', 'create failed'
 
     def test_clone(self):
-        options_1 = {
+        options_1 = {　　　#一些网站上的默认值
             'encoding': 'png',
             'folder_pct_test': 0,
             'folder_pct_val': 25,
@@ -179,13 +178,13 @@ class BaseViewsTestWithDataset(BaseViewsTestWithImageset):
             'resize_mode': 'half_crop',
         }
 
-        job1_id = self.create_dataset(**options_1)
+        job1_id = self.create_dataset(**options_1)　　#在上面这些默认值的基础上建立数据集，可以修改默认值
         assert self.dataset_wait_completion(job1_id) == 'Done', 'first job failed'
         rv = self.app.get('/datasets/%s.json' % job1_id)
         assert rv.status_code == 200, 'json load failed with %s' % rv.status_code
         content1 = json.loads(rv.data)
 
-        # Clone job1 as job2
+        # Clone job1 as job2　直接从job1克隆来获取数据集job2
         options_2 = {
             'clone': job1_id,
         }
@@ -269,7 +268,6 @@ class TestCreation(BaseViewsTestWithImageset, test_utils.DatasetMixin):
     def check_textfiles(self, absolute_path=True, local_path=True):
         """
         Create a dataset from textfiles
-
         Arguments:
         absolute_path -- if False, give relative paths and image folders
         """

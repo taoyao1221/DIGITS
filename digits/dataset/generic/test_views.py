@@ -3,12 +3,12 @@ from __future__ import absolute_import
 
 import json
 import os
-import tempfile
-import unittest
+import tempfile 　　　#临时文件
+import unittest　　　　#单元测试可以帮助我们很快准确的定位到问题的位置，出现问题的模块和单元
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup　　#网页抓取
 import numpy as np
-import PIL.Image
+import PIL.Image　　　#图像处理模块
 
 import digits.test_views
 from digits import extensions
@@ -28,16 +28,19 @@ class BaseViewsTest(digits.test_views.BaseViewsTest):
     Provides some functions
     """
 
-    @classmethod
-    def dataset_exists(cls, job_id):
+    @classmethod　
+    #普通的类方法通过self参数隐式的传递当前类对象的实例。
+    #@classmethod修饰的方法通过cls参数传递当前类对象。@staticmethod修饰的方法定义与普通函数是一样的。
+    #即通常用self来传递当前类对象的实例，cls传递当前类对象。
+    def dataset_exists(cls, job_id):  #判断数据集是否存在
         return cls.job_exists(job_id, 'datasets')
 
     @classmethod
-    def dataset_status(cls, job_id):
+    def dataset_status(cls, job_id):　　#查看数据集状态
         return cls.job_status(job_id, 'datasets')
 
     @classmethod
-    def abort_dataset(cls, job_id):
+    def abort_dataset(cls, job_id):     #返回 the HTTP status code
         return cls.abort_job(job_id, job_type='datasets')
 
     @classmethod
@@ -67,7 +70,6 @@ class BaseViewsTestWithDataset(BaseViewsTest):
         Create a dataset
         Returns the job_id
         Raises RuntimeError if job fails to create
-
         Keyword arguments:
         **kwargs -- data to be sent with POST request
         """
